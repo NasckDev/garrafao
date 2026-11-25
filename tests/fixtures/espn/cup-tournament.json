@@ -1,0 +1,1 @@
+{"$ref":"http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/tournaments/1?lang=en&region=us","id":"1","displayName":"NBA Cup","seasons":{"$ref":"http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/tournaments/1/seasons?lang=en&region=us"}}

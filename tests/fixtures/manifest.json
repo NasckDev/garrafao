@@ -1,0 +1,317 @@
+{
+ "capturedAt": "2026-11-25T19:55:39.147Z",
+ "entries": {
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/draft?season=2026": {
+   "file": "draft-site-2026.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/draft?season=2027": {
+   "file": "draft-site-2027.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/news?limit=20": {
+   "file": "news.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=202609&limit=400": {
+   "file": "month-202609.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=202610&limit=400": {
+   "file": "month-202610.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=202611&limit=400": {
+   "file": "month-202611.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261124": {
+   "file": "scoreboard-20261124.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261125": {
+   "file": "scoreboard-20261125.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261126": {
+   "file": "scoreboard-20261126.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=202612&limit=400": {
+   "file": "month-202612.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=202701&limit=400": {
+   "file": "month-202701.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=202702&limit=400": {
+   "file": "month-202702.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=202703&limit=400": {
+   "file": "month-202703.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=202704&limit=400": {
+   "file": "month-202704.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=202705&limit=400": {
+   "file": "month-202705.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=202706&limit=400": {
+   "file": "month-202706.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401909314": {
+   "file": "summary-401909314.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401909317": {
+   "file": "summary-401909317.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams": {
+   "file": "teams.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/25/roster": {
+   "file": "roster-25.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.api.espn.com/apis/v2/sports/basketball/nba/standings": {
+   "file": "standings.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/search?query=curry&limit=10&type=player&sport=basketball&league=nba": {
+   "file": "search-curry.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/search?query=Jaylin&limit=10&type=player&sport=basketball&league=nba": {
+   "file": "search-jaylin.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/1966": {
+   "file": "athlete-1966.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/1966/overview": {
+   "file": "overview-1966.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3032977": {
+   "file": "athlete-3032977.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3032977/overview": {
+   "file": "overview-3032977.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3059318": {
+   "file": "athlete-3059318.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3059318/overview": {
+   "file": "overview-3059318.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3112335": {
+   "file": "athlete-3112335.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3112335/overview": {
+   "file": "overview-3112335.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3136193": {
+   "file": "athlete-3136193.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3136193/overview": {
+   "file": "overview-3136193.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3136195": {
+   "file": "athlete-3136195.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3136195/overview": {
+   "file": "overview-3136195.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3202": {
+   "file": "athlete-3202.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3202/overview": {
+   "file": "overview-3202.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3908809": {
+   "file": "athlete-3908809.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3908809/overview": {
+   "file": "overview-3908809.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3934672": {
+   "file": "athlete-3934672.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3934672/overview": {
+   "file": "overview-3934672.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3945274": {
+   "file": "athlete-3945274.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3945274/overview": {
+   "file": "overview-3945274.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3975": {
+   "file": "athlete-3975.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/3975/overview": {
+   "file": "overview-3975.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4065648": {
+   "file": "athlete-4065648.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4065648/overview": {
+   "file": "overview-4065648.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4277905": {
+   "file": "athlete-4277905.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4277905/overview": {
+   "file": "overview-4277905.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4278073": {
+   "file": "athlete-4278073.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4278073/overview": {
+   "file": "overview-4278073.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4279888": {
+   "file": "athlete-4279888.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4279888/overview": {
+   "file": "overview-4279888.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4396993": {
+   "file": "athlete-4396993.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4396993/overview": {
+   "file": "overview-4396993.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4432158": {
+   "file": "athlete-4432158.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4432158/overview": {
+   "file": "overview-4432158.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4432166": {
+   "file": "athlete-4432166.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4432166/overview": {
+   "file": "overview-4432166.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4432573": {
+   "file": "athlete-4432573.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4432573/overview": {
+   "file": "overview-4432573.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4432816": {
+   "file": "athlete-4432816.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4432816/overview": {
+   "file": "overview-4432816.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4593803": {
+   "file": "athlete-4593803.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4593803/overview": {
+   "file": "overview-4593803.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4594268": {
+   "file": "athlete-4594268.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4594268/overview": {
+   "file": "overview-4594268.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4871144": {
+   "file": "athlete-4871144.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/4871144/overview": {
+   "file": "overview-4871144.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/5104157": {
+   "file": "athlete-5104157.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/5104157/overview": {
+   "file": "overview-5104157.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/6450": {
+   "file": "athlete-6450.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/6450/overview": {
+   "file": "overview-6450.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2026/draft": {
+   "file": "draft-core-2026.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2027": {
+   "file": "season-2027.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2027/draft": {
+   "file": "draft-core-2027.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/tournaments/1": {
+   "file": "cup-tournament.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  },
+  "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/tournaments/1/seasons/2027": {
+   "file": "cup-season-2027.json",
+   "capturedAt": "2026-11-25T19:55:39.147Z"
+  }
+ }
+}
