@@ -166,6 +166,6 @@ describe("Jogadores e favoritos", () => {
     window.location.hash = "#/jogadores";
     renderWithClient(<App />);
     expect(await screen.findByText(/Mostrando jogadores e médias do instantâneo/)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Situação dos dados: Dados: instantâneo de/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Situação dos dados: Dados: instantâneo\. A fonte não respondeu: mostrando o instantâneo gravado em \d{2}\/\d{2}\/\d{4}/ })).toBeInTheDocument();
   });
 });

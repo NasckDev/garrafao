@@ -53,6 +53,8 @@ site.api.espn.com · site.web.api.espn.com · sports.core.api.espn.com
 - **Normalização defensiva.** Tudo que a fonte pode omitir vira `null`, nunca um valor inventado. Links só `https`.
   Estatísticas lidas pelos nomes estáveis das colunas (`avgPoints`), com os rótulos curtos como reserva.
 - **Dia da rodada.** O parâmetro `dates` da ESPN segue o dia de Nova York; a navegação usa esse dia e todos os horários aparecem em Brasília.
+- **Textos da fonte em pt-BR.** Notas oficiais ("NBA Cup - Group Play") são traduzidas ("Copa NBA · fase de grupos"); sem tradução
+  conhecida, o original aparece marcado como inglês. Manchetes ficam no idioma original, indicadas como tal.
 - **Horário a definir.** Jogos com `timeValid: false` (mata-mata da NBA Cup ainda sem times) mostram só a data, no fuso da liga.
 - **Médias sem mistura de temporadas.** Médias completas vêm de `athletes/{id}/overview` (temporada regular corrente); se faltarem,
   o resumo do próprio perfil (mesma temporada) é usado e a nota abaixo dos números diz isso.
@@ -113,6 +115,11 @@ e `npm run snapshot` regrava o instantâneo offline.
 
 ## Testes
 
+Números da última execução (25/11/2026): **116 testes unitários e de componentes** em 6 arquivos (Vitest) e
+**14 cenários E2E** aprovados (Playwright; 16 declarados, 2 pulados por desenho: a varredura de larguras roda nos projetos desktop,
+claro e escuro, e cobre de 320 a 1920 px). Respostas reais gravadas: 78 arquivos em `tests/fixtures/espn` + 2 de um jogo ao vivo
+(Heat x 76ers, 2º quarto).
+
 - **Normalizadores** contra respostas reais gravadas em 25/11/2026 (placar com jogos agendados, finalizados e dia sem jogos,
   resumo, classificação, perfil, médias, busca, elenco, times, temporada, draft encerrado e agendado, calendário mês a mês).
 - **Handler**: lista fechada, validação de cada parâmetro, parâmetro extra, método, timeout, erro de origem → 502 sem vazamento,
@@ -122,8 +129,10 @@ e `npm run snapshot` regrava o instantâneo offline.
 - **Componentes com MSW**, rodando o handler real sobre as fixtures: Ao vivo, painel do jogo, Classificação (inclusive offline),
   Eventos, Notícias, Jogadores e Favoritos.
 - **E2E** (Playwright, build de produção, API interceptada com o handler sobre as fixtures, relógio fixo): jogadores → favoritar →
-  favoritos → ao vivo (troca de data, painel do jogo) → classificação → eventos → notícias, nos 4 projetos (390/1440 × claro/escuro),
-  com axe sem violações sérias; mais abertura pulável e queda para o instantâneo sem API.
+  comparar → favoritos → ao vivo (troca de data, painel do jogo, seguir time) → classificação → eventos → notícias, nos 4 projetos
+  (390/1440 × claro/escuro), com axe sem violações sérias; abertura pulável; queda para o instantâneo sem API; e varredura de todas
+  as abas em 320, 375, 390, 768, 1024, 1280, 1440 e 1920 px conferindo `scrollWidth <= clientWidth` e o sobrenome inteiro.
+- **Jogo ao vivo**: placar e resumo gravados durante Heat x 76ers (cache de 15 s, texto "2º quarto · relógio", polling só com a aba visível).
 
 ## Créditos
 

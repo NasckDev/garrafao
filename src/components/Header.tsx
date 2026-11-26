@@ -43,7 +43,7 @@ export function Header({ tab, source, capturedAt, onBrand, onRetrySource }: {
     source === "live"
       ? "Dados: ESPN"
       : source === "snapshot" && capturedAt
-        ? `Dados: instantâneo de ${formatDateTime(capturedAt).slice(0, 5)}`
+        ? "Dados: instantâneo"
         : source === "down"
           ? "Dados: indisponíveis"
           : "Dados: conectando…";
@@ -51,7 +51,7 @@ export function Header({ tab, source, capturedAt, onBrand, onRetrySource }: {
     source === "live"
       ? "Fonte de dados conectada: ESPN, pelo proxy do Garrafão."
       : source === "snapshot"
-        ? "A fonte não respondeu: mostrando o instantâneo gravado. Clique para tentar de novo."
+        ? `A fonte não respondeu: mostrando o instantâneo gravado em ${capturedAt ? formatDateTime(capturedAt) : "data desconhecida"}. Clique para tentar de novo.`
         : source === "down"
           ? "A fonte não respondeu. Clique para tentar de novo."
           : "Conectando à fonte de dados.";

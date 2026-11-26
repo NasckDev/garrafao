@@ -50,10 +50,12 @@ export function PlayersPage({ route, onTeam }: { route: Route; onTeam: (team: Te
   const compareId = route.query.get("vs");
 
   const featured = usePlayers(FEATURED_IDS, { fallback: true });
-  const extraIds = useMemo(
-    () => [...new Set([...favorites.players, routeId, compareId].filter((id): id is string => !!id && /^\d+$/.test(id) && !FEATURED.has(id)))].slice(0, 30),
-    [favorites.players, routeId, compareId],
-  );
+  // Destaque que faltou no lote (falha parcial da fonte) também é buscado sozinho quando é pedido pelo link ou pelos favoritos.
+  const missingFeatured = featured.data?.data.missing;
+  const extraIds = useMemo(() => {
+    const missing = new Set(missingFeatured ?? []);
+    return [...new Set([...favorites.players, routeId, compareId].filter((id): id is string => !!id && /^\d+$/.test(id) && (!FEATURED.has(id) || missing.has(id))))].slice(0, 30);
+  }, [favorites.players, routeId, compareId, missingFeatured]);
   const extra = usePlayers(extraIds, { fallback: true });
 
   const all = useMemo(() => {

@@ -79,6 +79,10 @@ test("jogadores -> favoritar -> favoritos -> ao vivo -> classificação -> event
   await expectAccessible(page, "eventos");
   await page.getByRole("link", { name: /Ver jogo/ }).last().click();
   await expect(page).toHaveURL(/#\/ao-vivo\/20261211\?jogo=401909456/);
+  // O link abre o painel do jogo na aba Ao vivo; fecha com Esc antes de seguir.
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toBeHidden();
 
   // Notícias.
   await nav.getByRole("link", { name: "Notícias" }).click();
@@ -107,5 +111,5 @@ test("sem a API (site estático), cai no instantâneo offline com a data de capt
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await page.getByRole("navigation", { name: "Seções" }).getByRole("link", { name: "Ao vivo" }).click();
   await expect(page.getByRole("alert")).toContainText("A fonte de dados não respondeu agora");
-  await expect(page.getByRole("button", { name: "Tentar de novo" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Tentar de novo", exact: true })).toBeVisible();
 });

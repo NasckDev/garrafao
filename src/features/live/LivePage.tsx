@@ -124,9 +124,9 @@ function DayStrip({ date, today, onGo }: { date: string; today: string; onGo: (k
         {days.map((key) => {
           const { weekday, day } = label(key);
           return (
-            <button key={key} type="button" className={key === shiftDay(date, -2) || key === shiftDay(date, 2) ? "day-far" : undefined} aria-pressed={key === date} onClick={() => onGo(key)} aria-label={`${formatDayLong(key)}${key === today ? " (hoje)" : ""}`}>
-              <small>{key === today ? "hoje" : weekday}</small>
-              <b>{day}</b>
+            <button key={key} type="button" className={key === shiftDay(date, -2) || key === shiftDay(date, 2) ? "day-far" : undefined} aria-pressed={key === date} onClick={() => onGo(key)}>
+              <small>{key === today ? "hoje" : weekday}</small> <b>{day}</b>
+              <span className="sr">, {formatDayLong(key)}</span>
             </button>
           );
         })}

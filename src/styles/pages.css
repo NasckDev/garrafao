@@ -682,8 +682,6 @@
   padding: 0;
   display: grid;
   gap: 6px;
-  max-height: 420px;
-  overflow-y: auto;
 }
 .picks li {
   display: grid;
@@ -928,7 +926,7 @@
 }
 .daystrip small {
   font-size: 0.72rem;
-  color: var(--muted);
+  color: var(--ink);
   text-transform: lowercase;
 }
 .daystrip b {
