@@ -5,13 +5,14 @@ import type { FetchLike } from "../../server/fetch-json";
 
 /**
  * `fetch` de teste: responde cada URL de origem com a resposta real gravada (tests/fixtures/manifest.json).
- * URL fora do manifesto responde 503, como uma origem fora do ar.
+ * URL fora do manifesto responde 503, como uma origem fora do ar. Entrada com `status` (ex.: 404 real de prêmio
+ * ainda não dado) responde com esse status e o corpo gravado.
  */
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "fixtures");
 
 interface Manifest {
   capturedAt: string;
-  entries: Record<string, { file: string; capturedAt: string }>;
+  entries: Record<string, { file: string; capturedAt: string; status?: number }>;
 }
 
 let manifest: Manifest | null = null;
@@ -45,7 +46,7 @@ function respond(status: number, body: unknown) {
 export const fixtureFetch: FetchLike = async (url) => {
   const entry = fixtureManifest().entries[url];
   if (!entry) return respond(503, { error: "fixture ausente" });
-  return respond(200, fixtureJson(entry.file));
+  return respond(entry.status ?? 200, fixtureJson(entry.file));
 };
 
 /** Instante fixo usado nos testes: 25/11/2026 17:00 em Brasília, dia da gravação das respostas. */

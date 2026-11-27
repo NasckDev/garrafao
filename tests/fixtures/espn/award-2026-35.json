@@ -1,0 +1,1 @@
+{"id":"35","name":"Rookie of the Year","description":"NBA Rookie of the Year","winners":[{"athlete":{"$ref":"http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2026/athletes/5041939?lang=en&region=us"},"team":{"$ref":"http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2026/teams/6?lang=en&region=us"},"note":"Test Note"}]}

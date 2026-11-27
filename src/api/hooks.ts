@@ -7,7 +7,9 @@ import type {
   Roster,
   Scoreboard,
   SearchHit,
+  SeasonAwards,
   SeasonEvents,
+  SeasonLeaders,
   Standings,
   TeamRef,
 } from "../../server/types";
@@ -137,5 +139,22 @@ export function useDraft(year: number) {
     queryKey: ["draft", year],
     staleTime: 60 * MINUTE,
     queryFn: ({ signal }) => apiGet<DraftInfo>("draft", { year }, signal),
+  });
+}
+
+export function useAwards(year: number) {
+  return useQuery({
+    queryKey: ["awards", year],
+    staleTime: 60 * MINUTE,
+    queryFn: ({ signal }) => apiGet<SeasonAwards>("awards", { year }, signal),
+  });
+}
+
+/** Líderes estatísticos da temporada (os 3 primeiros de cada categoria). */
+export function useLeaders(season: number) {
+  return useQuery({
+    queryKey: ["leaders", season],
+    staleTime: 15 * MINUTE,
+    queryFn: ({ signal }) => apiGet<SeasonLeaders>("leaders", { season }, signal),
   });
 }

@@ -17,7 +17,8 @@ export interface Persisted {
   theme: ThemeMode;
 }
 
-export const DEFAULTS: Persisted = { version: SCHEMA_VERSION, favorites: { players: [], teams: [] }, theme: "system" };
+/** Abre no tema escuro; a escolha salva pelo visitante (claro, escuro ou automático) é respeitada. */
+export const DEFAULTS: Persisted = { version: SCHEMA_VERSION, favorites: { players: [], teams: [] }, theme: "dark" };
 
 const MAX_FAVORITES = 30;
 const ID = /^[1-9]\d{0,11}$/;
@@ -25,7 +26,7 @@ const ID = /^[1-9]\d{0,11}$/;
 const ids = (value: unknown): string[] =>
   Array.isArray(value) ? [...new Set(value.filter((v): v is string => typeof v === "string" && ID.test(v)))].slice(0, MAX_FAVORITES) : [];
 
-const theme = (value: unknown): ThemeMode => (value === "light" || value === "dark" || value === "system" ? value : "system");
+const theme = (value: unknown): ThemeMode => (value === "light" || value === "dark" || value === "system" ? value : DEFAULTS.theme);
 
 /**
  * Lê o que estiver salvo e devolve sempre um estado válido da versão atual.

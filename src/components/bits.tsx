@@ -71,3 +71,24 @@ export function TeamLogo({ team, size = 32 }: { team: TeamRef; size?: number }) 
     />
   );
 }
+
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
+
+/** Foto do atleta publicada pela ESPN; sem foto ou se ela falhar, mostra as iniciais (o nome fica no texto ao lado). */
+export function Headshot({ src, name, size = 56 }: { src: string | null; name: string; size?: number }) {
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  if (!src || failedSrc === src) {
+    return (
+      <span className="headshot headshot-fallback" style={{ width: size, height: size }} aria-hidden="true">
+        {initials(name)}
+      </span>
+    );
+  }
+  return <img className="headshot" src={src} alt="" width={size} height={size} decoding="async" onError={() => setFailedSrc(src)} />;
+}

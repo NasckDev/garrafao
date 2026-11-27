@@ -1,0 +1,1 @@
+{"id":"40","name":"Sixth Man of the Year","description":"NBA Sixth Man Award","winners":[{"athlete":{"$ref":"http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2026/athletes/4395723?lang=en&region=us"},"team":{"$ref":"http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2026/teams/24?lang=en&region=us"},"note":"Test Note"}]}

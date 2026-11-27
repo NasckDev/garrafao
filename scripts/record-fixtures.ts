@@ -3,12 +3,16 @@
  * (as respostas cruas chegam a 2,5 MB por mês de calendário). O manifesto liga cada URL de origem ao arquivo,
  * e é ele que o `fetch` de teste usa para responder exatamente como a origem respondeu.
  *
- * Uso: npm run fixtures:record -- [--live YYYYMMDD EVENTO]
+ * Uso: npm run fixtures:record -- [--live YYYYMMDD EVENTO | --awards]
+ * `--awards` grava só o que a aba Prêmios usa e ainda não está gravado, sem regravar o resto.
  */
+import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { arr, isObj, obj } from "../server/json.js";
+import { AWARDS, parseAwardRefs } from "../server/normalize/awards.js";
+import { finalsMonths } from "../server/ops.js";
 import { normalizeSeason, seasonMonths } from "../server/normalize/season.js";
 import { originUrl } from "../server/origin.js";
 import { FEATURED_IDS } from "../src/config/featured.js";
@@ -135,6 +139,20 @@ const pruners: Record<string, Pruner> = {
     })),
   }),
   draftCore: (raw) => pick(raw, ["year", "numberOfRounds", "displayName", "shortDisplayName", "startDate", "endDate"]),
+  award: (raw) => pick(raw, ["id", "name", "description", "winners"]),
+  leaders: (raw) => ({
+    requestedSeason: pick(obj(raw).requestedSeason, ["year", "displayName"]),
+    leaders: {
+      categories: arr(obj(obj(raw).leaders).categories).map((category) => ({
+        ...pick(category, ["name", "displayName", "abbreviation"]),
+        leaders: arr(obj(category).leaders).map((leader) => ({
+          ...pick(leader, ["displayValue", "value"]),
+          athlete: pick(obj(leader).athlete, ["id", "displayName", "fullName", "headshot", "position"]),
+          team: team(obj(leader).team),
+        })),
+      })),
+    },
+  }),
   whole: (raw) => raw,
 };
 
@@ -142,10 +160,17 @@ interface Entry {
   url: string;
   file: string;
   kind: keyof typeof pruners;
+  /** Status de erro esperado e gravado como está (ex.: 404 de prêmio ainda não dado). */
+  status?: number;
 }
 
-async function record(entries: Entry[], updateManifest = true) {
-  const manifest = JSON.parse(await readFile(MANIFEST, "utf8").catch(() => "{\"entries\":{}}")) as { capturedAt?: string; entries: Record<string, { file: string; capturedAt: string }> };
+/** `replace`: regravação completa (atualiza a data do manifesto); `add`: só acrescenta entradas; `skip`: fora do manifesto. */
+async function record(entries: Entry[], manifestMode: "replace" | "add" | "skip" = "replace") {
+  const updateManifest = manifestMode !== "skip";
+  const manifest = JSON.parse(await readFile(MANIFEST, "utf8").catch(() => "{\"entries\":{}}")) as {
+    capturedAt?: string;
+    entries: Record<string, { file: string; capturedAt: string; status?: number }>;
+  };
   await mkdir(DIR, { recursive: true });
   const capturedAt = new Date().toISOString();
   let index = 0;
@@ -153,19 +178,21 @@ async function record(entries: Entry[], updateManifest = true) {
     while (index < entries.length) {
       const entry = entries[index++];
       const response = await fetch(entry.url, { headers: { Accept: "application/json" } });
-      if (!response.ok) throw new Error(`${entry.url} -> ${response.status}`);
-      const pruned = pruners[entry.kind](await response.json());
+      const expected = entry.status ?? 200;
+      if (response.status !== expected) throw new Error(`${entry.url} -> ${response.status} (esperado ${expected})`);
+      const body: unknown = await response.json();
+      const pruned = entry.status ? body : pruners[entry.kind](body);
       await writeFile(join(DIR, entry.file), `${JSON.stringify(pruned)}\n`);
-      if (updateManifest) manifest.entries[entry.url] = { file: entry.file, capturedAt };
+      if (updateManifest) manifest.entries[entry.url] = { file: entry.file, capturedAt, ...(entry.status ? { status: entry.status } : {}) };
       console.log(`ok ${entry.file}`);
     }
   };
   await Promise.all([worker(), worker(), worker(), worker()]);
   // Gravações avulsas (ex.: jogo ao vivo) não entram no manifesto: a mesma URL já responde o dia gravado antes.
   if (!updateManifest) return;
-  manifest.capturedAt = capturedAt;
+  if (manifestMode === "replace" || !manifest.capturedAt) manifest.capturedAt = capturedAt;
   const sorted = Object.fromEntries(Object.entries(manifest.entries).sort(([a], [b]) => a.localeCompare(b)));
-  await writeFile(MANIFEST, `${JSON.stringify({ capturedAt, entries: sorted }, null, 1)}\n`);
+  await writeFile(MANIFEST, `${JSON.stringify({ capturedAt: manifest.capturedAt, entries: sorted }, null, 1)}\n`);
 }
 
 async function main() {
@@ -176,7 +203,11 @@ async function main() {
     await record([
       { url: originUrl.scoreboardDay(date), file: `scoreboard-${date}-live.json`, kind: "scoreboard" },
       { url: originUrl.summary(eventId), file: `summary-${eventId}-live.json`, kind: "summary" },
-    ], false);
+    ], "skip");
+    return;
+  }
+  if (args.includes("--awards")) {
+    await recordAwards();
     return;
   }
 
@@ -210,6 +241,33 @@ async function main() {
     ]),
   ];
   await record(entries);
+}
+
+/** Temporada encerrada gravada para a aba Prêmios e a temporada em andamento (sem prêmios: 404 real da core). */
+const AWARDS_DONE = 2026;
+const AWARDS_OPEN = 2027;
+
+async function recordAwards() {
+  const missing = (entry: Entry) => !existsSync(join(DIR, entry.file));
+  const refs = await Promise.all(
+    AWARDS.map(async (award) => parseAwardRefs(await (await fetch(originUrl.award(AWARDS_DONE, award.id))).json())),
+  );
+  const athleteIds = [...new Set(refs.flatMap((ref) => ref?.winners.map((winner) => winner.athleteId) ?? []))];
+  const season = normalizeSeason(await (await fetch(originUrl.season(AWARDS_DONE))).json());
+  const playoffsEnd = season?.phases.find((phase) => phase.slug === "playoffs")?.end;
+  if (!season || !playoffsEnd) throw new Error(`temporada ${AWARDS_DONE} sem playoffs na fonte`);
+  const months = [...new Set([...seasonMonths(season), ...finalsMonths(playoffsEnd)])];
+
+  const entries: Entry[] = [
+    ...AWARDS.map((award): Entry => ({ url: originUrl.award(AWARDS_DONE, award.id), file: `award-${AWARDS_DONE}-${award.id}.json`, kind: "award" })),
+    ...AWARDS.map((award): Entry => ({ url: originUrl.award(AWARDS_OPEN, award.id), file: `award-${AWARDS_OPEN}-${award.id}.json`, kind: "whole", status: 404 })),
+    ...athleteIds.map((id): Entry => ({ url: originUrl.athlete(id), file: `athlete-${id}.json`, kind: "athlete" })),
+    { url: originUrl.season(AWARDS_DONE), file: `season-${AWARDS_DONE}.json`, kind: "whole" },
+    { url: originUrl.cupSeason(AWARDS_DONE), file: `cup-season-${AWARDS_DONE}.json`, kind: "whole" },
+    ...months.map((month): Entry => ({ url: originUrl.scoreboardMonth(month), file: `month-${month}.json`, kind: "scoreboard" })),
+    { url: originUrl.leaders(AWARDS_OPEN), file: `leaders-${AWARDS_OPEN}.json`, kind: "leaders" },
+  ];
+  await record(entries.filter(missing), "add");
 }
 
 main().catch((error: unknown) => {

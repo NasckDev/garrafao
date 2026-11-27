@@ -36,7 +36,7 @@ const respond = (status: number, body: unknown = {}) => ({ ok: status < 400, sta
 describe("lista fechada de operações", () => {
   it("expõe exatamente as operações documentadas", () => {
     expect(Object.keys(OPERATIONS).sort()).toEqual(
-      ["athlete", "draft", "events", "news", "overview", "players", "roster", "scoreboard", "search", "season", "standings", "summary", "teams"].sort(),
+      ["athlete", "awards", "draft", "events", "leaders", "news", "overview", "players", "roster", "scoreboard", "search", "season", "standings", "summary", "teams"].sort(),
     );
   });
 
@@ -83,6 +83,11 @@ describe("validação de parâmetros", () => {
     ["op=search&q=%3Cscript%3E", "A busca aceita só letras, números, espaço, ponto, hífen e apóstrofo"],
     [`op=players&ids=${Array.from({ length: 31 }, (_, i) => i + 1).join(",")}`, "No máximo 30 identificadores por chamada"],
     ["op=players&ids=1,,2", "Identificador inválido: ids"],
+    ["op=awards", "Parâmetro obrigatório ausente: year"],
+    ["op=awards&year=2001", "Ano fora do intervalo disponível"],
+    ["op=awards&year=2028", "Ano fora do intervalo disponível"],
+    ["op=leaders&season=abcd", "Ano inválido"],
+    ["op=leaders", "Parâmetro obrigatório ausente: season"],
   ])("%s -> 400", async (qs, message) => {
     const fetcher = vi.fn(fixtureFetch);
     const res = await call(qs, fetcher);
@@ -185,6 +190,9 @@ describe("cache por tipo de dado", () => {
     ["op=summary&event=401909314", 3600],
     ["op=summary&event=401909317", 300],
     ["op=events&season=2027", 21600],
+    ["op=awards&year=2026", 86400],
+    ["op=awards&year=2027", 3600],
+    ["op=leaders&season=2027", 900],
   ])("%s -> s-maxage=%i", async (qs, seconds) => {
     expect(await cache(qs)).toContain(`s-maxage=${seconds},`);
   });
@@ -194,5 +202,54 @@ describe("cache por tipo de dado", () => {
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({ missing: ["123456789"] });
     expect(res.headers["cache-control"]).toContain("s-maxage=300,");
+  });
+});
+
+describe("prêmios", () => {
+  it("temporada encerrada: prêmios com nome e foto, campeão pelas Finais, sem falhas", async () => {
+    const res = await call("op=awards&year=2026");
+    const body = res.body as { label: string; awards: { key: string; winners: { athlete: { name: string; headshot: string | null } }[] }[]; finals: unknown; failed: string[] };
+    expect(res.status).toBe(200);
+    expect(body.label).toBe("2025-26");
+    expect(body.awards.map((award) => award.key)).toEqual(["mvp", "finals-mvp", "roy", "dpoy", "sixth", "mip", "clutch", "cup-mvp", "allstar-mvp"]);
+    expect(body.awards[0].winners[0].athlete).toMatchObject({ name: "Shai Gilgeous-Alexander" });
+    expect(body.awards[0].winners[0].athlete.headshot).toMatch(/^https:\/\/a\.espncdn\.com\//);
+    expect(body.finals).toMatchObject({ champion: { abbr: "NY" }, wins: 4, losses: 1 });
+    expect(body.failed).toEqual([]);
+  });
+
+  it("prêmio ainda não dado (404 real da core) fica de fora, sem virar erro", async () => {
+    const res = await call("op=awards&year=2027");
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ year: 2027, label: "2026-27", awards: [], finals: null, failed: [] });
+  });
+
+  it("falha de um prêmio na origem vira parcial com cache curto", async () => {
+    const fetcher: FetchLike = async (url) => (url.endsWith("/awards/35") ? respond(500) : fixtureFetch(url));
+    const res = await call("op=awards&year=2026", fetcher);
+    expect(res.status).toBe(200);
+    expect((res.body as { failed: string[] }).failed).toEqual(["roy"]);
+    expect(res.headers["cache-control"]).toContain("s-maxage=300,");
+  });
+
+  it("vencedor que não se resolve também é falha parcial, nunca um nome inventado", async () => {
+    const fetcher: FetchLike = async (url) => (url.endsWith("/athletes/5041939") ? respond(503) : fixtureFetch(url));
+    const res = await call("op=awards&year=2026", fetcher);
+    const body = res.body as { awards: { key: string }[]; failed: string[] };
+    expect(body.failed).toEqual(["roy"]);
+    expect(body.awards.some((award) => award.key === "roy")).toBe(false);
+  });
+
+  it("origem fora em tudo vira 502", async () => {
+    const res = await call("op=awards&year=2026", async () => respond(500));
+    expect(res.status).toBe(502);
+    expect(res.body).toEqual({ error: MESSAGES.origin });
+  });
+
+  it("líderes da temporada: URL montada no servidor com limite fixo", async () => {
+    const fetcher = vi.fn(fixtureFetch);
+    const res = await call("op=leaders&season=2027", fetcher);
+    expect(res.status).toBe(200);
+    expect(fetcher.mock.calls[0][0]).toBe("https://site.api.espn.com/apis/site/v3/sports/basketball/nba/leaders?season=2027&limit=3");
   });
 });

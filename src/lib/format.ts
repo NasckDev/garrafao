@@ -146,6 +146,13 @@ export function seasonYearAt(date: Date): number {
   return month >= 9 ? year + 1 : year;
 }
 
+/** Última temporada encerrada: a final da NBA termina em junho, então a partir de julho vale a do próprio ano. */
+export function lastCompletedSeason(date: Date): number {
+  const key = dayKey(date);
+  const year = Number(key.slice(0, 4));
+  return Number(key.slice(4, 6)) >= 7 ? year : year - 1;
+}
+
 export const seasonLabel = (year: number) => `${year - 1}-${String(year).slice(2)}`;
 
 /** Notas oficiais dos jogos (em inglês na fonte) traduzidas; sem mapeamento, o original aparece marcado como inglês. */

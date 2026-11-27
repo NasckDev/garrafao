@@ -15,10 +15,11 @@ Projeto de estudo, sem vínculo com a NBA ou a ESPN.
 | Ao vivo | Placar do dia com navegação por data, status (agendado em horário de Brasília, ao vivo com período e relógio, final), parciais por quarto, painel do jogo com líderes; atualiza sozinho só com jogo ao vivo e aba visível | `scoreboard`, `summary` |
 | Classificação | Leste e Oeste: V, D, %, jogos atrás, sequência, últimos 10, casa, fora, saldo | `standings` |
 | Eventos | Fases da temporada, NBA Cup, All-Star e Draft, só com o que a fonte publica | `events`, `draft` |
+| Prêmios | Disputa pelo MVP (líderes estatísticos da temporada em andamento), campeão da NBA com MVP das Finais, campeão e MVP da Copa NBA, MVP, calouro do ano, top 3 do Draft e outros prêmios; seletor de temporada com link direto (`#/premios/2026`) | `awards`, `leaders`, `events`, `draft` |
 | Notícias | Manchetes da ESPN com link para a matéria | `news` |
 
 Estados completos em todas as abas: carregando (esqueleto), vazio, erro com "Tentar de novo", parcial e offline com instantâneo.
-Claro/escuro (automático ou escolhido), responsivo de 390 px a 1440 px+, abertura animada só na primeira visita da sessão (pulável),
+Abre no tema escuro; claro, escuro ou automático escolhido fica salvo. Responsivo de 320 px a 1920 px, abertura animada só na primeira visita da sessão (pulável),
 `prefers-reduced-motion` respeitado.
 
 ## Arquitetura
@@ -81,8 +82,23 @@ site.api.espn.com · site.web.api.espn.com · sports.core.api.espn.com
 | `season` | `year` | core `seasons/{ano}` | 1 dia / 7 dias |
 | `draft` | `year` | core `seasons/{ano}/draft` + `site/…/draft?season=` | encerrado 1 dia / 7 dias; senão 1 h / 1 dia |
 | `events` | `season` | core `seasons/{ano}`, core `tournaments/1` e `tournaments/1/seasons/{ano}`, placar mês a mês | 6 h / 1 dia (parcial: 5 min / 10 min) |
+| `awards` | `year` | core `seasons/{ano}/awards/{id}` (9 prêmios), `athlete` de cada vencedor, `site/…/teams`, core `seasons/{ano}` e placar dos dois últimos meses dos playoffs | temporada passada 1 dia / 7 dias; corrente 1 h / 1 dia (parcial: 5 min / 10 min) |
+| `leaders` | `season` | `site/v3/…/leaders?season=&limit=3` | temporada corrente 15 min / 1 h; passada 1 dia / 7 dias |
 
 Erros: 400 e 502 com `no-store`; 404 com `s-maxage=60`.
+
+### Fonte de cada dado da aba Prêmios
+
+- **Disputa pelo MVP**: a ESPN não publica votação nem ranking do MVP nos endpoints abertos. A aba diz isso e mostra os 3 primeiros
+  da temporada em andamento em pontos, rebotes, assistências, roubos, tocos e cestas de 3 por jogo (`site/v3/…/leaders`).
+- **Prêmios individuais** (MVP, MVP das Finais, calouro, defensor, sexto homem, quem mais evoluiu, jogador decisivo, MVP da Copa e
+  do All-Star): API core `seasons/{ano}/awards/{id}`, que só traz referências; nome e foto vêm do perfil do atleta. Prêmio ainda
+  não dado responde 404 na core e fica de fora; vencedor que não se resolve vira aviso de dado parcial, nunca um nome inventado.
+- **Campeão da NBA**: contado pelas vitórias nos jogos com a nota oficial "NBA Finals - Game N" no calendário dos dois últimos meses
+  dos playoffs (datas da core). Sem um time com 4 vitórias, não há campeão a mostrar.
+- **Campeão da Copa NBA**: o jogo "NBA Cup Championship" encerrado, lido pela mesma operação `events` da aba Eventos.
+- **Top 3 do Draft**: operação `draft` do ano da temporada (o Draft acontece no fim dela).
+- **Recordes**: não entram. Nenhum endpoint público da ESPN testado publica recordes da liga.
 
 ### Fonte de cada dado da aba Eventos
 
@@ -115,10 +131,16 @@ e `npm run snapshot` regrava o instantâneo offline.
 
 ## Testes
 
-Números da última execução (25/11/2026): **116 testes unitários e de componentes** em 6 arquivos (Vitest) e
-**14 cenários E2E** aprovados (Playwright; 16 declarados, 2 pulados por desenho: a varredura de larguras roda nos projetos desktop,
-claro e escuro, e cobre de 320 a 1920 px). Respostas reais gravadas: 78 arquivos em `tests/fixtures/espn` + 2 de um jogo ao vivo
-(Heat x 76ers, 2º quarto).
+Números da última execução (27/11/2026): **146 testes unitários e de componentes** em 7 arquivos (Vitest) e
+**18 cenários E2E** aprovados (Playwright; 20 declarados, 2 pulados por desenho: a varredura de larguras roda nos projetos desktop,
+claro e escuro, e cobre de 320 a 1920 px). Respostas reais gravadas: 111 no manifesto de `tests/fixtures/espn` (9 delas são 404
+reais de prêmios ainda não dados) + 2 de um jogo ao vivo (Heat x 76ers, 2º quarto). `npm run fixtures:record -- --awards` grava só
+o que a aba Prêmios usa e ainda falta, sem regravar o resto.
+
+- **Prêmios**: normalizadores (referências da core, campeão contado pelas Finais, líderes), handler (404 = prêmio fora, falha parcial,
+  vencedor sem nome resolvido nunca aparece, 502, cache) e componente (sucesso, vazio da temporada em andamento, erro com nova
+  tentativa, parcial, link direto, temporada inválida, seletor que entra no histórico), além do E2E com axe e voltar do navegador.
+- **Tema padrão**: primeira visita abre escura mesmo com o sistema claro; escolha salva (claro, escuro, automático) é respeitada.
 
 - **Normalizadores** contra respostas reais gravadas em 25/11/2026 (placar com jogos agendados, finalizados e dia sem jogos,
   resumo, classificação, perfil, médias, busca, elenco, times, temporada, draft encerrado e agendado, calendário mês a mês).

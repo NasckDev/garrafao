@@ -18,6 +18,7 @@ import { PlayersPage } from "./features/players/PlayersPage";
 const LivePage = lazy(() => import("./features/live/LivePage").then((m) => ({ default: m.LivePage })));
 const StandingsPage = lazy(() => import("./features/standings/StandingsPage").then((m) => ({ default: m.StandingsPage })));
 const EventsPage = lazy(() => import("./features/events/EventsPage").then((m) => ({ default: m.EventsPage })));
+const AwardsPage = lazy(() => import("./features/awards/AwardsPage").then((m) => ({ default: m.AwardsPage })));
 const NewsPage = lazy(() => import("./features/news/NewsPage").then((m) => ({ default: m.NewsPage })));
 const FavoritesPage = lazy(() => import("./features/favorites/FavoritesPage").then((m) => ({ default: m.FavoritesPage })));
 
@@ -60,7 +61,7 @@ export function App() {
 
   const dataText =
     source === "live"
-      ? "Dados públicos da ESPN, lidos por um proxy próprio com cache na CDN: fotos, médias da temporada, placares, classificação e calendário."
+      ? "Dados públicos da ESPN, lidos por um proxy próprio com cache na CDN: fotos, médias da temporada, placares, classificação, calendário e prêmios."
       : source === "snapshot" && capturedAt
         ? `Sem conexão com a fonte: jogadores e classificação vêm do instantâneo offline gravado em ${formatDateTime(capturedAt)}.`
         : source === "down"
@@ -88,6 +89,7 @@ export function App() {
             {route.tab === "ao-vivo" ? <LivePage route={route} now={now} /> : null}
             {route.tab === "classificacao" ? <StandingsPage /> : null}
             {route.tab === "eventos" ? <EventsPage now={now} /> : null}
+            {route.tab === "premios" ? <AwardsPage route={route} now={now} /> : null}
             {route.tab === "noticias" ? <NewsPage /> : null}
           </Suspense>
         </main>

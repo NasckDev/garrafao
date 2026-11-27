@@ -3,10 +3,12 @@ import { describe, expect, it } from "vitest";
 import { normalizeAthlete, normalizeOverview, normalizeRoster, normalizeSearch, normalizeTeams, parseDraft, parseHeight } from "../../server/normalize/athlete";
 import { normalizeGame, normalizeGameList, normalizeScoreboard, normalizeTeamRef } from "../../server/normalize/game";
 import { normalizeNews } from "../../server/normalize/news";
+import { buildAward, findFinals, normalizeLeaders, parseAwardRefs } from "../../server/normalize/awards";
 import { buildSeasonEvents, normalizeDraft, normalizeSeason, seasonMonths } from "../../server/normalize/season";
 import { normalizeStandings } from "../../server/normalize/standings";
 import { normalizeSummary } from "../../server/normalize/summary";
 import type { SeasonInfo } from "../../server/types";
+import { FEATURED_IDS } from "../../src/config/featured";
 import { fixtureJson } from "../support/fixture-fetch";
 
 describe("placar (scoreboard)", () => {
@@ -149,8 +151,9 @@ describe("atleta", () => {
 
   it("todos os 25 destaques gravados normalizam com médias da temporada", () => {
     const manifest = Object.values((fixtureJson("../manifest.json") as { entries: Record<string, { file: string }> }).entries).map((e) => e.file);
-    const athletes = manifest.filter((f) => f.startsWith("athlete-"));
+    const athletes = FEATURED_IDS.map((id) => `athlete-${id}.json`);
     expect(athletes).toHaveLength(25);
+    expect(athletes.every((file) => manifest.includes(file))).toBe(true);
     for (const file of athletes) {
       expect(normalizeAthlete(fixtureJson(file))?.name).toBeTruthy();
       expect(normalizeOverview(fixtureJson(file.replace("athlete-", "overview-")))?.season?.pts).toEqual(expect.any(Number));
@@ -207,5 +210,49 @@ describe("temporada, draft e eventos", () => {
     expect(events.allStar).toEqual([]);
     expect(events.months.failed).toEqual(["202703"]);
     expect(events.months.scanned).toHaveLength(9);
+  });
+});
+
+describe("prêmios, campeão e líderes", () => {
+  it("prêmio da core: só referências ao atleta e ao time, lidas pelos ids", () => {
+    expect(parseAwardRefs(fixtureJson("award-2026-35.json"))).toEqual({ sourceName: "Rookie of the Year", winners: [{ athleteId: "5041939", teamId: "6" }] });
+    expect(parseAwardRefs({ winners: [] })).toBeNull();
+    expect(parseAwardRefs({ id: "1", winners: [{ athlete: { $ref: "https://evil.test/x" } }] })).toEqual({ sourceName: null, winners: [] });
+  });
+
+  it("monta o prêmio com atleta e time resolvidos; vencedor sem nome resolvido não vira prêmio", () => {
+    const refs = parseAwardRefs(fixtureJson("award-2026-35.json"));
+    if (!refs) throw new Error("fixture");
+    const teams = new Map(normalizeTeams(fixtureJson("teams.json")).map((team) => [team.id, team]));
+    const flagg = { id: "5041939", name: "Cooper Flagg", headshot: null, position: "F" };
+    expect(buildAward({ key: "roy", name: "Calouro do ano" }, refs, new Map([[flagg.id, flagg]]), teams)).toMatchObject({
+      key: "roy",
+      sourceName: "Rookie of the Year",
+      winners: [{ athlete: { name: "Cooper Flagg" }, team: { abbr: "DAL" } }],
+    });
+    expect(buildAward({ key: "roy", name: "Calouro do ano" }, refs, new Map(), teams)).toBeNull();
+  });
+
+  it("campeão contado pelas vitórias nos jogos \"NBA Finals\" (Knicks 4 x 1 Spurs em 2026)", () => {
+    const games = ["202605", "202606"].flatMap((month) => normalizeGameList(fixtureJson(`month-${month}.json`)));
+    const finals = findFinals(games);
+    expect(finals).toMatchObject({ champion: { abbr: "NY" }, runnerUp: { abbr: "SA" }, wins: 4, losses: 1 });
+    expect(finals?.decidedAt.startsWith("2026-06-14")).toBe(true);
+  });
+
+  it("sem time com 4 vitórias na final não há campeão (série em andamento ou fora dos meses lidos)", () => {
+    const games = normalizeGameList(fixtureJson("month-202606.json")).filter((game) => !/Game 5/.test(game.note ?? ""));
+    expect(findFinals(games)).toBeNull();
+    expect(findFinals([])).toBeNull();
+  });
+
+  it("líderes: só as categorias escolhidas, 3 por categoria, com atleta e time já resolvidos", () => {
+    const leaders = normalizeLeaders(fixtureJson("leaders-2027.json"));
+    expect(leaders).toMatchObject({ year: 2027, label: "2026-27" });
+    expect(leaders?.categories.map((category) => category.key)).toEqual(["pts", "reb", "ast", "stl", "blk", "3pm"]);
+    expect(leaders?.categories[0].leaders).toHaveLength(3);
+    expect(leaders?.categories[0].leaders[0]).toMatchObject({ athlete: { id: "3945274", name: "Luka Doncic", position: "G" }, team: { abbr: "LAL" } });
+    expect(leaders?.categories[0].leaders[0].value).toBeCloseTo(36.6, 1);
+    expect(normalizeLeaders({ leaders: {} })).toBeNull();
   });
 });

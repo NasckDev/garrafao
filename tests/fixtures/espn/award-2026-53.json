@@ -1,0 +1,1 @@
+{"id":"53","name":"All-Star MVP","description":"All-Star Most Valuable Player","winners":[{"athlete":{"$ref":"http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2026/athletes/4594268?lang=en&region=us"},"team":{"$ref":"http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2026/teams/132374?lang=en&region=us"},"note":"Test Note"}]}

@@ -1310,7 +1310,8 @@ h3 {
     grid-column: 1/-1;
   }
 }
-@media (max-width: 960px) {
+/* Marca + sete abas + ferramentas só cabem numa linha acima disto; abaixo, as abas descem para a linha de baixo inteira. */
+@media (max-width: 1180px) {
   .tabs {
     order: 3;
     flex-basis: 100%;
@@ -1354,14 +1355,19 @@ h3 {
   }
 }
 @media (max-width: 560px) {
+  /* Sete abas: quebram em linhas pelo tamanho do rótulo, e cada linha ocupa a largura toda (nenhum rótulo encosta no vizinho). */
   .tabs ul {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    flex-wrap: wrap;
     width: 100%;
   }
+  .tabs li {
+    flex: 1 1 auto;
+    display: flex;
+  }
   .tabs a {
+    flex: 1 1 auto;
     justify-content: center;
-    padding: 0 6px;
+    padding: 0 10px;
     font-size: 0.88rem;
   }
 }
