@@ -13,6 +13,8 @@ const SCREENS = [
   { name: "painel do jogo", hash: "#/ao-vivo/20261124?jogo=401909314", ready: "Ao vivo" },
   { name: "classificação", hash: "#/classificacao", ready: "Classificação" },
   { name: "eventos", hash: "#/eventos", ready: "Eventos" },
+  { name: "prêmios", hash: "#/premios", ready: "Prêmios" },
+  { name: "prêmios (temporada vazia)", hash: "#/premios/2027", ready: "Prêmios" },
   { name: "notícias", hash: "#/noticias", ready: "Notícias" },
 ];
 

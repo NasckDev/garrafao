@@ -2,7 +2,7 @@ import { useSyncExternalStore } from "react";
 
 /** Roteamento por hash: funciona servido em subpasta estática e recarrega rota interna sem 404. */
 
-export type Tab = "jogadores" | "favoritos" | "ao-vivo" | "classificacao" | "eventos" | "noticias";
+export type Tab = "jogadores" | "favoritos" | "ao-vivo" | "classificacao" | "eventos" | "premios" | "noticias";
 
 export const TABS: { id: Tab; label: string }[] = [
   { id: "jogadores", label: "Jogadores" },
@@ -10,12 +10,13 @@ export const TABS: { id: Tab; label: string }[] = [
   { id: "ao-vivo", label: "Ao vivo" },
   { id: "classificacao", label: "Classificação" },
   { id: "eventos", label: "Eventos" },
+  { id: "premios", label: "Prêmios" },
   { id: "noticias", label: "Notícias" },
 ];
 
 export interface Route {
   tab: Tab;
-  /** Segmento após a aba: id do jogador (jogadores) ou dia YYYYMMDD (ao-vivo). */
+  /** Segmento após a aba: id do jogador (jogadores), dia YYYYMMDD (ao-vivo) ou temporada AAAA (premios). */
   param: string | null;
   query: URLSearchParams;
 }

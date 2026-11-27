@@ -32,10 +32,18 @@ async function routeApi(page: Page) {
 }
 
 export const test = base.extend<{ app: Page }>({
-  app: async ({ page }, use) => {
+  app: async ({ page }, use, testInfo) => {
     await page.clock.setFixedTime(FIXTURE_NOW);
     await routeApi(page);
     await page.addInitScript(() => window.sessionStorage.setItem("garrafao:intro-seen", "1"));
+    // O app abre no tema escuro; nos projetos "claro", o visitante escolheu o claro antes (escolha salva, como no app).
+    if (testInfo.project.name.endsWith("claro")) {
+      await page.addInitScript(() => {
+        if (!window.localStorage.getItem("garrafao:state")) {
+          window.localStorage.setItem("garrafao:state", JSON.stringify({ version: 1, favorites: { players: [], teams: [] }, theme: "light" }));
+        }
+      });
+    }
     await use(page);
   },
 });

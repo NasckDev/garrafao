@@ -1,0 +1,1 @@
+{"id":"43","name":"Finals MVP","description":"NBA Finals Most Valuable Player","winners":[{"athlete":{"$ref":"http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2026/athletes/3934672?lang=en&region=us"},"team":{"$ref":"http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2026/teams/18?lang=en&region=us"},"note":"Test Note"}]}

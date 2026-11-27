@@ -1,6 +1,6 @@
 import { expect, expectAccessible, test } from "./fixtures";
 
-test("jogadores -> favoritar -> favoritos -> ao vivo -> classificação -> eventos -> notícias", async ({ app: page }, testInfo) => {
+test("jogadores -> favoritar -> favoritos -> ao vivo -> classificação -> eventos -> prêmios -> notícias", async ({ app: page }, testInfo) => {
   const mobile = testInfo.project.name.startsWith("mobile");
   const nav = page.getByRole("navigation", { name: "Seções" });
 
@@ -84,6 +84,33 @@ test("jogadores -> favoritar -> favoritos -> ao vivo -> classificação -> event
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toBeHidden();
 
+  // Prêmios: campeão, Copa, MVP, calouro, Draft e a disputa atual; seletor de temporada pelo teclado; voltar no histórico.
+  await nav.getByRole("link", { name: "Prêmios" }).click();
+  await expect(page).toHaveURL(/#\/premios$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Prêmios" })).toBeVisible();
+  await expect(page.locator("main")).toBeFocused();
+  const champion = page.getByRole("region", { name: "Campeão da NBA" });
+  await expect(champion).toContainText("New York Knicks");
+  await expect(champion.getByRole("link", { name: "Jalen Brunson" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Copa NBA" })).toContainText("124 a 113");
+  await expect(page.getByRole("region", { name: "MVP e calouro do ano" })).toContainText("Cooper Flagg");
+  await expect(page.getByRole("region", { name: "Draft 2026: as três primeiras escolhas" })).toContainText("AJ Dybantsa");
+  await expect(page.getByRole("region", { name: "Pontos por jogo" })).toContainText("36,6");
+  await expectAccessible(page, "prêmios");
+  const season = page.getByRole("combobox", { name: "Ver temporada" });
+  await season.focus();
+  await season.selectOption("2027");
+  await expect(page).toHaveURL(/#\/premios\/2027$/);
+  await expect(page.getByText("Nenhum prêmio publicado ainda")).toBeVisible();
+  await expectAccessible(page, "prêmios (vazio)");
+  await page.goBack();
+  await expect(page).toHaveURL(/#\/premios$/);
+  await expect(champion).toContainText("New York Knicks");
+  await champion.getByRole("link", { name: "Jalen Brunson" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Jalen Brunson" })).toBeVisible();
+  await page.goBack();
+  await expect(page.getByRole("heading", { level: 1, name: "Prêmios" })).toBeVisible();
+
   // Notícias.
   await nav.getByRole("link", { name: "Notícias" }).click();
   await expect(page.getByRole("link", { name: /abre a ESPN em nova aba/ }).first()).toHaveAttribute("target", "_blank");
@@ -112,4 +139,20 @@ test("sem a API (site estático), cai no instantâneo offline com a data de capt
   await page.getByRole("navigation", { name: "Seções" }).getByRole("link", { name: "Ao vivo" }).click();
   await expect(page.getByRole("alert")).toContainText("A fonte de dados não respondeu agora");
   await expect(page.getByRole("button", { name: "Tentar de novo", exact: true })).toBeVisible();
+});
+
+test.describe("tema padrão", () => {
+  test.use({ colorScheme: "light" });
+
+  test("sem tema salvo, abre no tema escuro mesmo com o sistema em claro; a troca fica salva", async ({ page }) => {
+  await page.addInitScript(() => window.sessionStorage.setItem("garrafao:intro-seen", "1"));
+  await page.route("**/api/nba?**", (route) => route.fulfill({ status: 502, contentType: "application/json", body: JSON.stringify({ error: "x" }) }));
+  await page.goto("/#/premios");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).colorScheme)).toBe("dark");
+  await page.getByRole("button", { name: "Tema escuro. Trocar tema" }).click();
+  await page.reload();
+  await expect(page.locator("html")).not.toHaveAttribute("data-theme", "dark");
+  await expect(page.getByRole("button", { name: "Tema automático. Trocar tema" })).toBeVisible();
+  });
 });

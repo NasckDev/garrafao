@@ -122,7 +122,7 @@ describe("persistência local com versão de esquema", () => {
     expect(migrate({ version: SCHEMA_VERSION, favorites: { players: ["3975", "x", "3975", 7, "<script>"] }, theme: "neon" })).toEqual({
       version: SCHEMA_VERSION,
       favorites: { players: ["3975"], teams: [] },
-      theme: "system",
+      theme: "dark",
     });
     window.localStorage.setItem(STORAGE_KEY, "{quebrado");
     expect(getPersisted()).toEqual(DEFAULTS);
@@ -134,10 +134,19 @@ describe("persistência local com versão de esquema", () => {
     expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "{}")).toEqual({
       version: SCHEMA_VERSION,
       favorites: { players: ["3975"], teams: ["25"] },
-      theme: "system",
+      theme: "dark",
     });
     toggleFavorite("players", "3975");
     expect(getPersisted().favorites.players).toEqual([]);
+  });
+
+  it("primeira visita abre no tema escuro; tema escolhido e salvo é respeitado", () => {
+    expect(getPersisted().theme).toBe("dark");
+    for (const saved of ["light", "system", "dark"] as const) {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: SCHEMA_VERSION, favorites: { players: [], teams: [] }, theme: saved }));
+      resetPersistedCache();
+      expect(getPersisted().theme).toBe(saved);
+    }
   });
 
   it("ignora id inválido", () => {
